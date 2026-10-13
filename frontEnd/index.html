@@ -1,0 +1,67 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Register / Login</title>
+<style>
+  body { font-family: sans-serif; max-width: 640px; margin: 2rem auto; padding: 0 1rem; }
+  form { display: grid; gap: .5rem; flex: 1; }
+  .row { display: flex; gap: 2rem; flex-wrap: wrap; }
+  input, button { padding: .5rem; font-size: 1rem; }
+  #msg { margin-top: 1rem; padding: .5rem; white-space: pre-wrap; }
+  .ok { background: #e6f7e6; } .err { background: #fde8e8; }
+</style>
+</head>
+<body>
+<h1>Forum</h1>
+<div class="row">
+  <form id="register">
+    <h2>Register</h2>
+    <input name="first_name" placeholder="First name" required>
+    <input name="last_name" placeholder="Last name" required>
+    <input name="phone" type="tel" placeholder="Phone" pattern="[0-9+\-\s]{7,15}" required>
+    <input name="email" type="email" placeholder="Email" required>
+    <input name="password" type="password" placeholder="Password" minlength="6" required>
+    <button>Register</button>
+  </form>
+  <form id="login">
+    <h2>Login</h2>
+    <input name="email" type="email" placeholder="Email" required>
+    <input name="password" type="password" placeholder="Password" required>
+    <button>Login</button>
+  </form>
+</div>
+<div id="msg" role="status"></div>
+
+<script>
+const API = "http://localhost:5000";
+const msg = document.getElementById("msg");
+
+for (const form of document.querySelectorAll("form")) {
+  form.addEventListener("submit", async (e) => {
+    e.preventDefault();
+    try {
+      const res = await fetch(`${API}/${form.id}`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(Object.fromEntries(new FormData(form))),
+      });
+      const data = await res.json().catch(() => ({}));
+      // ponytail: token (if API returns one) shown only; store it when you add protected pages
+      show(res.ok, data.detail || data.message || JSON.stringify(data));
+      if (res.ok) form.reset();
+    } catch {
+      show(false, "Cannot reach server at " + API);
+    }
+  });
+}
+
+function show(ok, text) {
+  msg.className = ok ? "ok" : "err";
+  msg.textContent = text;
+  alert((ok ? "Success: " : "Error: ") + text);
+}
+</script>
+</body>
+</html>
