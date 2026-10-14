@@ -1,7 +1,7 @@
 
 # models.py
 
-from sqlalchemy import Column, Integer, String, DateTime
+from sqlalchemy import Column, Integer, String, DateTime, Text
 from sqlalchemy.sql import func
 
 from database import Base
@@ -19,6 +19,10 @@ class User(Base):
     email = Column(String(255), nullable=False, unique=True, index=True)
 
     password_hash = Column(String(255), nullable=False)
+
+    access_token = Column(Text, nullable=True)
+    refresh_token = Column(Text, nullable=True)
+    role = Column(String(20), nullable=False, server_default="user")
 
     created_at = Column(
         DateTime(timezone=True),
