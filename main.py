@@ -4,7 +4,7 @@ from fastapi import FastAPI, HTTPException
 import config
 from sqlalchemy.exc import SQLAlchemyError
 
-from fastapi import FastAPI, status, Depends, HTTPException
+from fastapi import status, Depends  # main: FastAPI/HTTPException already imported above
 # create FastaPI application 
 
 from schemas import UserResponse, UserCreate
@@ -23,11 +23,11 @@ password_hash = PasswordHash.recommended()
 
 # Database session dependency
 def get_db():
-    db = SessionLocal()
+    database = SessionLocal()  # main
     try:
-        yield db
+        yield database
     finally:
-        db.close()
+        database.close()
 
 #endpoint 
 @app.get("/")
