@@ -10,7 +10,7 @@ DATABASE_URL = (
     f"{config.DB_PORT}/{config.DB_NAME}"
 )
 
-engine = create_engine(DATABASE_URL)
+engine = create_engine(DATABASE_URL, pool_pre_ping=True)
 
 SessionLocal = sessionmaker(
     bind=engine,
