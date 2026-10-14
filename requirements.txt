@@ -3,3 +3,6 @@ dotenv
 uvicorn
 sqlalchemy 
 psycopg[binary]
+
+pwdlib[argon2]
+pydantic[email]
