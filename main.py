@@ -5,6 +5,7 @@ import config
 from sqlalchemy.exc import SQLAlchemyError
 
 from fastapi import status, Depends  # main: FastAPI/HTTPException already imported above
+from fastapi import status, Depends  # kamubranch: FastAPI/HTTPException already imported above
 # create FastaPI application 
 
 from schemas import UserResponse, UserCreate

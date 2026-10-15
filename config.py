@@ -3,7 +3,7 @@ import os
 from dotenv import load_dotenv
 
 load_dotenv()
-# Server settings: defined on main
+# Server settings: defined on kamubranch# Server settings: defined on main
 APP_NAME = os.getenv("APP_NAME", "MyFastAPIApp")
 HOST = os.getenv("HOST", "127.0.0.1")
 PORT = int(os.getenv("PORT", "9000"))
