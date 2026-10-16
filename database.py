@@ -26,3 +26,12 @@ def check_db_connection():
         result = connection.execute(text("SELECT 1"))
         print("Db is connected=========================", result)
         return result.scalar()
+
+
+# Database session dependency
+def get_db():
+    database = SessionLocal()  # main
+    try:
+        yield database
+    finally:
+        database.close()

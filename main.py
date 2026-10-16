@@ -1,55 +1,34 @@
+# main.py
 
 import uvicorn
-from fastapi import FastAPI, HTTPException
 import config
-from sqlalchemy.exc import SQLAlchemyError
-
-from fastapi import status, Depends  # main: FastAPI/HTTPException already imported above
-from fastapi import status, Depends  # kamubranch: FastAPI/HTTPException already imported above
-# create FastaPI application 
-
-from schemas import UserResponse, UserCreate
+from fastapi import FastAPI, HTTPException, status, Depends
 from sqlalchemy.orm import Session
-from database import SessionLocal, engine
-from pwdlib import PasswordHash
-from models import User, Base
 from sqlalchemy.exc import IntegrityError
+from pwdlib import PasswordHash
+
+from database import engine, get_db
+from models import User
+from schemas import UserResponse, UserCreate
+from routes.auth import router as auth_router
+
+# ✅ Create FastAPI app
 app = FastAPI()
 
-# ✅ YE LINE ADD KARO - Table automatically banega PostgreSQL mein
+# ✅ Register Routes
+app.include_router(auth_router)
+
+# ✅ Create tables if not exists
 User.metadata.create_all(bind=engine)
 
+# ✅ Password hashing
 password_hash = PasswordHash.recommended()
 
 
-# Database session dependency
-def get_db():
-    database = SessionLocal()  # main
-    try:
-        yield database
-    finally:
-        database.close()
-
-#endpoint 
 @app.get("/")
-def home():
-    return {"message": " Hello world"}
+def health_check():
+    return {"status": "Server is running ✅"}
 
-# Get users endpoint
-@app.get("/users")
-def get_users():
-    return [
-        {"id": 1, "name": "Rahul"},
-        {"id": 2, "name": "Priya"}
-    ]
-
-# Get a specific user by ID
-@app.get("/users/{user_id}")
-def get_user(user_id: int):
-    return {
-        "user_id": user_id,
-        "message": "User fetched successfully"
-    }
 
 @app.post(
     "/registerusers",
@@ -87,10 +66,11 @@ def register_user(
 
     return new_user
 
+
 if __name__ == "__main__":
     uvicorn.run(
         "main:app",
         host=config.HOST,
-        port=config.PORT,
+        #port=config.PORT,
         reload=True
     )
