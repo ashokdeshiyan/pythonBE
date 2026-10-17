@@ -1,0 +1,7 @@
+@import "tailwindcss";
+
+@theme {
+  --color-ok-bg: #e6f7e6;
+  --color-err-bg: #fde8e8;
+}
+
