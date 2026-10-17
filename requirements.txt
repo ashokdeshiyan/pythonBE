@@ -7,4 +7,4 @@ psycopg[binary]
 pwdlib[argon2]
 pydantic[email]
 alembic
-jose
+python-jose

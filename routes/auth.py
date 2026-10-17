@@ -6,12 +6,15 @@ from sqlalchemy.exc import IntegrityError
 from database import get_db
 from models import User
 from schemas import UserLogin, LoginResponse
-from utils.token import create_access_token, create_refresh_token
+from utils.token import create_access_token
 from pwdlib import PasswordHash
 
 password_hash = PasswordHash.recommended()
 router = APIRouter()
 
+
+def verify_password(plain_password: str, hashed_password: str) -> bool:
+    return password_hash.verify(plain_password, hashed_password)
 
 @router.post(
     "/login",
@@ -32,7 +35,7 @@ def login_user(
         )
 
     # Step 2: Verify password
-    if not password_hash.verify(login_data.password, user.password_hash):
+    if not verify_password(login_data.password, str(user.password_hash)):
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Incorrect password"
@@ -45,7 +48,7 @@ def login_user(
    # refresh_token = create_refresh_token(data=token_data)
 
     # Step 4: Save tokens to DB
-    user.access_token = access_token
+    # user.access_token = access_token
     #user.refresh_token = refresh_token
     db.commit()
     db.refresh(user)
